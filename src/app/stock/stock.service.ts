@@ -1,32 +1,53 @@
 import { Injectable } from '@angular/core';
+import { Http, Headers } from '@angular/http';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class StockService {
 
   constructor(
-   
-  ) {
-    
-   }
-   private stocks:Stock[] = [
-    new Stock(1,"第一隻股票", 1.99, 3.5, "在慕課網學習", ["IT","internet"]),
-    new Stock(2,"第二隻股票", 1.99, 3, "在慕課網學習", ["IT","internet"]),
-    new Stock(3,"第三隻股票", 1.99, 1.5, "在慕課網學習", ["IT","internet"]),
-    new Stock(4,"第四隻股票", 1.99, 2.5, "在慕課網學習", ["IT","internet"]),
-    new Stock(5,"第五隻股票", 1.99, 4, "在慕課網學習", ["IT","internet"]),
-  ]
-  getStocks():Stock[] {
+    public http: Http
+  ) {}
+  private header = new Headers({'Content-Type': 'application/json'});
+  private stocks:Stock[];
+  
 
-    return this.stocks;
+  getStocks():Promise<Stock[]>{
+    
+    return this.http.get('/api').toPromise()
+                .then(response => {
+                  this.stocks = response.json();
+                  return this.stocks;
+                })
+                .catch(this.handleError);
+  }
+  getStock(id:number):Promise<Stock> {
+
+      return this.http.get('/api/stock/'+id).toPromise()
+                                .then(respone => respone.json() )
+                                .catch(this.handleError);
+
+  }
+  updataStock(item: Stock):Promise<any> {
+   
+     return this.http.post('/api/add/stock',item)
+              .toPromise()
+              .then(data => data.json())
+              .catch(this.handleError);
   }
 
-  getStock(id:number):Stock {
-    var stock = this.stocks.find(stock => stock.id == id);
-    //点击创建按钮，查不到数据  返回undefined
-      if (!stock) {
-        stock = new Stock(0,"第一隻股票", 0, 0, "", []);
-      }
-    return stock;
+  deleteStock(stock:Stock):Promise<any> {
+
+   return this.http.get('/api/delete/'+stock.id)
+              .toPromise()
+              .then(response => response.json())
+              .catch(this.handleError);
+  }
+
+  //返回错误信息
+  private  handleError(error: any): Promise<any> {
+    console.error('An error occurred', error); // for demo purposes only
+    return Promise.reject(error.message || error);
   }
 }
 

@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
 
- import { ReactiveFormsModule,FormsModule }  from '@angular/forms';
+import { ReactiveFormsModule,FormsModule }  from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { MenuComponent } from './menu/menu.component';
@@ -51,7 +52,8 @@ const routers: Routes = [
     BrowserModule,
      ReactiveFormsModule,
      FormsModule,
-    RouterModule.forRoot(routers)
+    RouterModule.forRoot(routers),
+    HttpModule
   ],
   providers: [StockService],
   bootstrap: [AppComponent]
